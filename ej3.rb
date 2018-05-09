@@ -1,4 +1,5 @@
-curso = {"tam" => {:nombre => 'tam', :edad => 22, :comuna => 'provi', :genero => 'femenino'}, "pincheira" => {:nombre => 'pincheira', :edad => 31, :comuna => 'talca', :genero => 'masculino'}}
+curso = {"tam" => {:nombre => 'tam', :edad => 22, :comuna => 'provi', :genero => 'femenino'},
+    "pincheira" => {:nombre => 'pincheira', :edad => 31, :comuna => 'talca', :genero => 'masculino'}}
 
 opcion = ''
 until opcion == 7 do
@@ -17,7 +18,7 @@ until opcion == 7 do
     edad = gets.chomp
     puts "ingrese comuna"
     comuna = gets.chomp
-    puts "ingrese genero"
+    puts "ingrese genero (femenino o masculino)"
     genero = gets.chomp
 
     curso[nombre] = {:nombre => nombre, :comuna => comuna, :edad => edad.to_i, :genero => genero}
@@ -29,6 +30,37 @@ until opcion == 7 do
     puts 'Para Editar, ingrese nombre completo del alumno'
     actualiza = gets.chomp
 
+    puts 'Ingrese nuevo nombre o deje vacio para mantener, Nombre:'
+    name = gets.chomp
+    sim = name.to_s
+
+    if actualiza != name && name != ''
+      curso[sim] = curso[actualiza]
+
+      curso[sim][:nombre] = sim
+      curso[actualiza].delete
+      actualiza = sim
+    end
+
+    puts 'Ingrese nuevo comuna o deje vacio para mantener, Comuna:'
+    comu = gets.chomp
+    if curso[actualiza][:comuna] != comu && comu != ''
+
+      curso[actualiza][:comuna] = comu
+    end
+
+    puts 'Ingrese nuevo Edad o deje vacio para mantener, Edad:'
+    age = gets.chomp
+    if curso[actualiza][:edad] != age && age != ''
+      curso[actualiza][:edad] = age
+    end
+
+    puts 'Ingrese nuevo genero o deje vacio para mantener, Genero (femenino o masculino):'
+    sexo = gets.chomp
+    if curso[actualiza][:genero] != sexo && sexo != ''
+      curso[actualiza][:genero] = sexo
+    end
+    puts "el alumno quedo como> #{curso[actualiza]}"
 
   when "3"
     #listo
@@ -43,21 +75,28 @@ until opcion == 7 do
     puts "El numero de alumnos es:  #{total}"
 
   when "5"
+    # listo
     comunas = {}
     curso.map do |alumno|
-      puts "alumno #{alumno}"
+      # puts "alumno #{alumno}"
       alumno.each_with_index.map do |v, i|
-        puts "datos #{i} - #{v}"
+        # puts "datos #{i} - #{v}"
 
         if i == 1
-          puts v[:comuna]
-          comunas[v[:comuna]] = 1
+          # puts v[:comuna]
+          if comunas[v[:comuna].downcase] != nil
+            comunas[v[:comuna].downcase] += 1
+          else
+            comunas[v[:comuna].downcase] = 1
+          end
         end
 
       end
-      puts "------------"
+
     end
-     puts comunas
+     puts "comunas #{comunas}"
+     puts "------------"
+
   when "6"
     #listo
     edades = {}
@@ -100,7 +139,11 @@ until opcion == 7 do
 
 
   when "9"
-    
+    #listo
+
+    generos = {"femenino" => curso.select { |k, alumno| alumno[:genero] == 'femenino' }, "masculino" => curso.select { |k, alumno| curso[k][:genero] == 'masculino' }  }
+    print "generos: #{generos}"
+    puts "============="
 
   when "10"
     puts 'Adios'
