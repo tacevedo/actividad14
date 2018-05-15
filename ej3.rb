@@ -29,45 +29,58 @@ until opcion == 7 do
     puts "el curso es #{curso}"
     puts 'Para Editar, ingrese nombre completo del alumno'
     actualiza = gets.chomp
+    puts curso.has_key? actualiza
+    if curso.has_key? actualiza
+      puts 'Ingrese nuevo nombre o deje vacio para mantener, Nombre:'
+      name = gets.chomp
+      nombre_bien = ''
+      if actualiza != name && name != ''
+        nombre_bien = name.gsub(' ', '_')
+        curso[nombre_bien] = curso[actualiza].clone
+        curso[nombre_bien][:nombre] = name
+      else
+        nombre_bien = actualiza
+        curso[nombre_bien] = curso.delete actualiza
+      end
 
-    puts 'Ingrese nuevo nombre o deje vacio para mantener, Nombre:'
-    name = gets.chomp
-    sim = name.to_s
+      puts 'Ingrese nuevo comuna o deje vacio para mantener, Comuna:'
+      comu = gets.chomp
+      if curso[nombre_bien][:comuna] != comu && comu != ''
+        curso[nombre_bien][:comuna] = comu
+      end
 
-    if actualiza != name && name != ''
-      curso[sim] = curso[actualiza]
+      puts 'Ingrese nuevo Edad o deje vacio para mantener, Edad:'
+      age = gets.chomp
+      if curso[nombre_bien][:edad] != age && age != ''
+        curso[nombre_bien][:edad] = age
+      end
 
-      curso[sim][:nombre] = sim
-      curso[actualiza].delete
-      actualiza = sim
+      puts 'Ingrese nuevo genero o deje vacio para mantener, Genero (femenino o masculino):'
+      sexo = gets.chomp
+      if curso[nombre_bien][:genero] != sexo && sexo != ''
+        curso[nombre_bien][:genero] = sexo
+      end
+
+      puts "el alumno quedo como> #{curso[nombre_bien]}"
+      curso.delete(actualiza)
+    else
+      puts "Alumno no existe"
     end
-
-    puts 'Ingrese nuevo comuna o deje vacio para mantener, Comuna:'
-    comu = gets.chomp
-    if curso[actualiza][:comuna] != comu && comu != ''
-
-      curso[actualiza][:comuna] = comu
-    end
-
-    puts 'Ingrese nuevo Edad o deje vacio para mantener, Edad:'
-    age = gets.chomp
-    if curso[actualiza][:edad] != age && age != ''
-      curso[actualiza][:edad] = age
-    end
-
-    puts 'Ingrese nuevo genero o deje vacio para mantener, Genero (femenino o masculino):'
-    sexo = gets.chomp
-    if curso[actualiza][:genero] != sexo && sexo != ''
-      curso[actualiza][:genero] = sexo
-    end
-    puts "el alumno quedo como> #{curso[actualiza]}"
 
   when "3"
     #listo
-    puts "el curso es #{curso}"
+    puts "Los alumnos son:"
+    curso.each do |k, v|
+      puts v[:nombre]
+    end
     puts 'Ingrese el nombre del alumno que quiere eliminar'
     eliminar = gets.chomp
-    curso.delete(eliminar)
+    if !curso[eliminar]
+      puts "Alumno no existe"
+    else
+      curso.delete(eliminar)
+      puts "Eliminado #{eliminar}"
+    end
 
   when "4"
     #listo
@@ -78,12 +91,8 @@ until opcion == 7 do
     # listo
     comunas = {}
     curso.map do |alumno|
-      # puts "alumno #{alumno}"
-      alumno.each_with_index.map do |v, i|
-        # puts "datos #{i} - #{v}"
-
+      alumno.each_with_index do |v, i|
         if i == 1
-          # puts v[:comuna]
           if comunas[v[:comuna].downcase] != nil
             comunas[v[:comuna].downcase] += 1
           else
@@ -101,10 +110,9 @@ until opcion == 7 do
     #listo
     edades = {}
     curso.map do |val|
-      puts val
-      val.each_with_index.map do |val, i|
+      val.each_with_index do |val, i|
         if i == 1 && val[:edad] > 20 && val[:edad] < 26
-            edades[val[:nombre]] = val
+            edades[val[:nombre]] = val[:edad]
         end
       end
     end
@@ -113,9 +121,8 @@ until opcion == 7 do
   when "7"
     #listo
     totaledad = 0
-    curso.map do |val|
-
-      val.each_with_index.map do |val, i|
+    curso.each do |val|
+      val.each_with_index do |val, i|
         if i ==1
           totaledad += val[:edad]
         end
@@ -126,9 +133,8 @@ until opcion == 7 do
   when "8"
     #listo
     promedioedades = 0
-    curso.map do |val|
-      puts val
-      val.each_with_index.map do |val, i|
+    curso.each do |val|
+      val.each_with_index do |val, i|
         if i ==1
           promedioedades += val[:edad]
         end
